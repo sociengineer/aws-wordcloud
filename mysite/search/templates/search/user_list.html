@@ -99,6 +99,8 @@
 
   </script>
 
+  <div>
+
 
   <script src="https://d3js.org/d3.v4.min.js"></script>
   <!-- <script src="{% static 'js/d3.layout.cloud.js' %}"></script> -->
@@ -118,7 +120,7 @@
             .range(["#ddd", "#ccc", "#bbb", "#aaa", "#999", "#888", "#777", "#666", "#555", "#444", "#333", "#222"]);
 
     function draw(words) {
-        d3.select("body").append("div").append("svg")
+        d3.select("body").append("svg")
                 .attr("width", 960)
                 .attr("height", 500)
                 .attr("class", "wordcloud")
@@ -137,5 +139,6 @@
                 })
                 .text(function(d) { return d.text; });
     }
-</script>
+  </script>
+  </div>
 {% endblock %}
