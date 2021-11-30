@@ -1,0 +1,141 @@
+{% extends 'base.html' %}
+
+{% load widget_tweaks %}
+{% load static %}
+{% block content %}
+  <form method="get">
+    <div class="well">
+      <h4 style="margin-top: 0">Filter</h4>
+      <div class="row">
+        <div class="form-group col-sm-4 col-md-3">
+          {{ filter.form.categories.label_tag }}
+          {% render_field filter.form.categories class="form-control" %}
+        </div>
+        <div class="form-group col-sm-4 col-md-3">
+          {{ filter.form.city.label_tag }}
+          {% render_field filter.form.city class="form-control" %}
+        </div>
+        <div class="form-group col-sm-4 col-md-3">
+          {{ filter.form.country.label_tag }}
+          {% render_field filter.form.country class="form-control" %}
+        </div>
+        <div class="form-group col-sm-4 col-md-3">
+          {{ filter.form.name.label_tag }}
+          {% render_field filter.form.name class="form-control" %}
+        </div>
+        <div class="form-group col-sm-4 col-md-3">
+          {{ filter.form.date.label_tag }}
+          {% render_field filter.form.date class="form-control" %}
+        </div>
+        <div class="form-group col-sm-4 col-md-3">
+          {{ filter.form.rating.label_tag }}
+          {% render_field filter.form.rating class="form-control" %}
+        </div>
+      </div>
+      <button type="submit" class="btn btn-primary">
+        <span class="glyphicon glyphicon-search"></span> Search
+      </button>
+    </div>
+  </form>
+  <!-- <table class="table table-bordered">
+    <thead>
+      <tr>
+        <th>Category</th>
+        <th>City</th>
+        <th>Country</th>
+        <th>Name</th>
+        <th>Date</th>
+        <th>Rating</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for review in filter.qs %}
+        <tr>
+          <td>{{ review.categories }}</td>
+          <td>{{ review.city }}</td>
+          <td>{{ review.country }}</td>
+          <td>{{ review.name }}</td>
+          <td>{{ review.date }}</td>
+          <td>{{ review.rating }}</td>
+        </tr>
+      {% empty %}
+        <tr>
+          <td colspan="5">No data</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table> -->
+
+  <script>
+    token_list = []
+    {% for review in filter.qs %} 
+    token_list.push({{review.tokens|safe}}.split()) 
+    {% endfor %}
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js"></script>
+  <script>
+    tokens_all = []
+    for(i=0;i<token_list.length;i++) {
+      // console.log(token_list[i][0].replace('\'','').split(', '))
+      temp = token_list[i][0].replace('\'','').split(', ')
+      for(j=0;j<temp.length;j++) {
+        // console.log(temp[j].replace('[','').replace(']','').replace(/'/g,''))
+        tokens_all.push(temp[j].replace('[','').replace(']','').replace(/'/g,''))
+      }
+    }
+    // console.log(tokens_all)
+    tokens_for_wordcloud = []
+    counted_tokens_all = _.countBy(tokens_all)
+    for (const [key, value] of Object.entries(counted_tokens_all)){
+      var temp_dict = {}
+      temp_dict['text'] = key
+      temp_dict['size'] = value
+      tokens_for_wordcloud.push(temp_dict)
+    }
+    // console.log(tokens_for_wordcloud)
+
+
+
+
+  </script>
+
+
+  <script src="https://d3js.org/d3.v4.min.js"></script>
+  <!-- <script src="{% static 'js/d3.layout.cloud.js' %}"></script> -->
+  <script src="https://rawgit.com/jasondavies/d3-cloud/master/build/d3.layout.cloud.js"></script>
+  <script>
+    wordScale = d3.scaleLinear().domain([0, 1000]).range([0, 5000]).clamp(true);
+    d3.layout.cloud().size([960, 500])
+        .words(tokens_for_wordcloud)
+        .rotate(0)
+        .fontSize(function(d) { return wordScale(d.size); })
+        .font("Impact")
+        .on("end", draw)
+        .start();
+
+    var color = d3.scaleLinear()
+            .domain([0,1,2,3,4,5,6,10,15,20,100])
+            .range(["#ddd", "#ccc", "#bbb", "#aaa", "#999", "#888", "#777", "#666", "#555", "#444", "#333", "#222"]);
+
+    function draw(words) {
+        d3.select("body").append("svg")
+                .attr("width", 960)
+                .attr("height", 500)
+                .attr("class", "wordcloud")
+                .append("g")
+                // without the transform, words words would get cutoff to the left and top, they would
+                // appear outside of the SVG area
+                .attr("transform", "translate(250,250)")
+                .selectAll("text")
+                .data(words)
+                .enter().append("text")
+                .style("font-size", function(d) { return d.size + "px"; })
+                .style("text-align","center")
+                // .style("fill", function(d, i) { return color(i); })
+                .attr("transform", function(d) {
+                    return "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")";
+                })
+                .text(function(d) { return d.text; });
+    }
+</script>
+{% endblock %}
