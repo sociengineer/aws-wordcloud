@@ -110,6 +110,7 @@
         .rotate(0)
         .fontSize(function(d) { return wordScale(d.size); })
         .font("Impact")
+        .padding("300")
         .on("end", draw)
         .start();
 
@@ -130,7 +131,7 @@
                 .data(words)
                 .enter().append("text")
                 .style("font-size", function(d) { return d.size + "px"; })
-                .style("padding-left","300")
+                // .style("padding-left","300")
                 // .style("fill", function(d, i) { return color(i); })
                 .attr("transform", function(d) {
                     return "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")";
