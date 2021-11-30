@@ -104,7 +104,7 @@
   <!-- <script src="{% static 'js/d3.layout.cloud.js' %}"></script> -->
   <script src="https://rawgit.com/jasondavies/d3-cloud/master/build/d3.layout.cloud.js"></script>
   <script>
-    wordScale = d3.scaleLinear().domain([0, 1000]).range([0, 500]).clamp(true);
+    wordScale = d3.scaleLinear().domain([0, 500]).range([0, 100]).clamp(true);
     d3.layout.cloud().size([960, 500])
         .words(tokens_for_wordcloud)
         .rotate(0)
