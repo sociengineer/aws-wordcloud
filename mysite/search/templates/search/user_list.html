@@ -4,7 +4,7 @@
 {% load static %}
 {% block content %}
 <style>
-	.wordcloud{ padding-left: 300; }
+	#wordcloud{ padding-left: 200; }
 </style>
   <form method="get">
     <div class="well">
@@ -124,6 +124,7 @@
         d3.select("body").append("div").append("svg")
                 .attr("width", 960)
                 .attr("height", 500)
+                .attr("id", 'wordcloud')
                 .attr("class", "wordcloud")
                 .append("g")
                 // without the transform, words words would get cutoff to the left and top, they would
