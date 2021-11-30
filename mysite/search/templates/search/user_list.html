@@ -5,6 +5,7 @@
 {% block content %}
 <style>
 	#wordcloud{ padding-left: 200; }
+  .wordcloud{ padding-left: 200; }
 </style>
   <form method="get">
     <div class="well">
@@ -141,6 +142,8 @@
                 })
                 .text(function(d) { return d.text; });
     }
+    var wordcloud = document.getElementById("wordcloud");
+    wordcloud.style["padding-left"] = "200";
 </script>
 </div>
 {% endblock %}
